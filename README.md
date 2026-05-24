@@ -13,22 +13,38 @@ iterative 24-hour outdoor experiments, and each run tests only a small number of
 This project builds an ML pipeline to predict sub-ambient surface temperature (DeltaT vs
 reference) from formulation parameters, reducing the number of experiments needed.
 
-## Data (Demo)
-Placeholder 24-hour outdoor surface temperature measurements (1-minute intervals) across
-19 formulation IDs and 1 bare reference. Same structure as the production dataset.
-Key target: daytime peak DeltaT vs bare substrate.
-
 ## Pipeline
-1. **EDA** - distributions, cooling profiles, day/night separation, correlations
-2. **Feature engineering** - extract daytime peak DeltaT, mean DeltaT, time-of-peak per sample
-3. **Model** - Random Forest regressor mapping formulation parameters to cooling performance
-4. **Interpretation** - feature importance to guide next experiment design
+
+```
+Raw CSV  ->  EDA  ->  Feature Engineering  ->  Random Forest  ->  Experiment Recommendations
+  01           01              02                    03
+```
+
+## Results (Demo Data)
+
+| Metric | Value |
+|--------|-------|
+| CV Strategy | Leave-One-Out (n=19) |
+| R2 | 0.911 |
+| MAE | 0.075 degC |
+| RMSE | 0.107 degC |
+| Top feature | mean_dT_day |
+
+## Notebooks
+
+| Notebook | Description |
+|----------|-------------|
+| `01_eda_rc_coating.ipynb` | EDA: distributions, 24h profiles, correlations |
+| `02_features.ipynb` | Feature engineering from time-series + formulation metadata |
+| `03_model.ipynb` | Random Forest + LOOCV + feature importance + error analysis |
 
 ## Project Structure
 ```
 rc-coating-ml/
-├── data/raw/           # demo CSVs (same structure as production data)
-├── notebooks/          # EDA and modelling notebooks
+├── data/
+│   ├── raw/            # demo temperature CSVs (same structure as production)
+│   └── features.csv    # extracted feature matrix
+├── notebooks/          # EDA, features, model
 ├── figures/            # generated plots (gitignored)
 └── requirements.txt
 ```
@@ -37,13 +53,13 @@ rc-coating-ml/
 ```bash
 python -m venv .venv && .venv\Scripts\activate
 pip install -r requirements.txt
-jupyter notebook notebooks/01_eda_rc_coating.ipynb
+jupyter notebook
 ```
+Run notebooks in order: 01 -> 02 -> 03.
 
 ## Status
 - [x] Environment setup
 - [x] EDA notebook (01_eda_rc_coating.ipynb)
-- [ ] Feature engineering notebook
-- [ ] Random Forest baseline model
-- [ ] Cross-validation + error analysis
+- [x] Feature engineering (02_features.ipynb)
+- [x] Random Forest + LOOCV (03_model.ipynb)
 - [ ] Full dataset integration (post-publication)
