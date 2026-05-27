@@ -2,6 +2,6 @@
 __pycache__/
 *.pyc
 .ipynb_checkpoints/
-figures/*.png
-figures/*.pdf
+figures/**/*.png
+figures/**/*.pdf
 .DS_Store
